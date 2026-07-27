@@ -125,6 +125,57 @@ Coverage tags indicate parts of the source code that implements a certain requir
 
 Needs: req
 
+### Gherkin Import
+`feat~gherkin-import~1`
+
+OFT imports specification items from annotated Gherkin scenarios and scenario outlines in `.feature` files.
+
+Needs: req
+
+#### Import Gherkin Scenarios
+`req~gherkin-scenario-import~1`
+
+OFT imports a Gherkin `Scenario` or `Scenario Outline` as a specification item when its immediately preceding contiguous tag region contains exactly one `@id:<specification-item-id>` tag. The ID supplies the item location, the scenario header supplies the title, and scenario steps form the description. An invalid ID skips only the affected scenario. Duplicate item IDs are passed to the OFT core for validation.
+
+Covers:
+
+* [feat~gherkin-import~1](#gherkin-import)
+
+Needs: dsn
+
+#### Validate Gherkin Covers Metadata
+`req~gherkin-covers-validation~1`
+
+OFT accepts optional, scoped `# Covers:` comments between an ID tag region and its scenario header. Covers may occur multiple times. Each directive must contain a non-empty, valid, duplicate-free list of specification item IDs. An invalid Covers directive skips only the affected scenario.
+
+Covers:
+
+* [feat~gherkin-import~1](#gherkin-import)
+
+Needs: dsn
+
+#### Validate Gherkin Needs Metadata
+`req~gherkin-needs-validation~1`
+
+OFT accepts an optional, scoped `# Needs:` comment between an ID tag region and its scenario header. The directive may occur once and must contain a non-empty, valid, duplicate-free list of artifact types. An invalid or repeated Needs directive skips only the affected scenario.
+
+Covers:
+
+* [feat~gherkin-import~1](#gherkin-import)
+
+Needs: dsn
+
+#### Preserve Gherkin Comment Coverage Tags
+`req~gherkin-comment-coverage-tags~1`
+
+OFT imports basic coverage tags from comments in `.feature` files, but does not evaluate coverage tags in executable Gherkin lines.
+
+Covers:
+
+* [feat~gherkin-import~1](#gherkin-import)
+
+Needs: dsn
+
 ### ReqM2 Export
 `feat~reqm2-export~1`
 
@@ -526,7 +577,7 @@ Covers:
 
 Needs: dsn
 
-#### Include Items That Don't Have Tags Or Where at Least One Tag Matches 
+#### Include Items That Don't Have Tags Or Where at Least One Tag Matches
 `req~include-items-that-do-not-have-tags-or-where-at-least-one-tag-matches~1`
 
 OFT gives users the option to include only specification items that either do not have tags or have at least one tag from a configurable set of tags during processing.
@@ -548,7 +599,7 @@ Reports are the main way to find out if a projects requirements are covered prop
 Users can choose to display the requirement origin (e.g. file and line number) in reports:
 
 * In the body of a specification item
-* For each link to a specification item 
+* For each link to a specification item
 
 Rationale:
 
@@ -806,29 +857,29 @@ Covers:
 Needs: dsn
 
 #### Common
- 
+
 ##### CLI Help
 `req~cli.help~1`
- 
+
 `help`, `-h` and `--help` show a short help text with command line usage.
- 
+
 Covers:
- 
+
 * [feat~command-line-interface~1](#command-line-interface)
- 
+
 Needs: dsn
- 
+
 ##### CLI Version
 `req~cli.version~1`
- 
+
 `help`, `-h` and `--help` show the version of OFT.
- 
+
 Covers:
- 
+
 * [feat~command-line-interface~1](#command-line-interface)
- 
+
 Needs: dsn
- 
+
 ##### Input Selection
 `req~cli.input-selection~1`
 

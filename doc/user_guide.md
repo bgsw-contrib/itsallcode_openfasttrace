@@ -522,7 +522,6 @@ Unfortunately, we are only human and humans make mistakes. Here is a non-exhaust
 
 | Mistake                         | How it manifests in OFT                            |
 |---------------------------------|----------------------------------------------------|
-| Copy and paste errors           | duplicates, covering the wrong item                |
 | Unimplemented feature           | missing leaves in the implementation               |
 | Missing tests                   | missing leaves in the test                         |
 | Typos in requirement IDs        | causing branches to be cut somewhere in the middle |
@@ -822,6 +821,25 @@ Note that XML is at the moment not yet supported by the Tag Importer, because it
 **Test Specification languages**
 
 * [Gherkin](https://cucumber.io/docs/gherkin/) (`.feature`)
+
+#### Gherkin
+
+OFT imports Gherkin `Scenario` and `Scenario Outline` blocks in `.feature` files when the immediately preceding tag region contains one OFT ID tag. Place optional `Covers` and `Needs` comments after the tags and before the scenario header:
+
+```gherkin
+@smoke
+@id:scn~user-can-log-in~1
+# Covers: req~authentication~1
+# Needs: dsn, itest
+Scenario: A registered user logs in
+  Given a registered user
+  When they enter valid credentials
+  Then access is granted
+```
+
+The ID tag becomes the item location and the scenario header becomes its title; executable steps become the description. `Covers` and `Needs` are case-sensitive and optional. Multiple `Covers` comments accumulate coverage IDs, while `Needs` may appear once; all lists must be non-empty and comma-separated. Invalid IDs, types, or directives skip only the affected scenario and emit a warning.
+
+Existing full coverage tags remain supported in Gherkin comments, for example `# [impl~login~1 -> dsn~authentication~1]`. OFT deliberately ignores coverage-tag-shaped text in executable Gherkin lines.
  
 #### Markdown
 
