@@ -15,7 +15,8 @@ public class RestructuredTextImporterFactory extends AbstractRegexMatchingImport
     }
 
     @Override
-    public int getPriority() {
+    public int getPriority()
+    {
         return 2000;
     }
 

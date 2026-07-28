@@ -1,13 +1,13 @@
 package org.itsallcode.openfasttrace.importer.lightweightmarkup;
 
-import org.itsallcode.openfasttrace.api.core.ItemStatus;
-import org.itsallcode.openfasttrace.api.core.SpecificationItem;
-import org.itsallcode.openfasttrace.api.core.SpecificationItemId;
+import org.itsallcode.openfasttrace.api.core.*;
 import org.itsallcode.openfasttrace.api.importer.ImportEventListener;
 import org.itsallcode.openfasttrace.api.importer.Importer;
 import org.itsallcode.openfasttrace.api.importer.input.InputFile;
 import org.itsallcode.openfasttrace.importer.lightweightmarkup.linereader.*;
 import org.itsallcode.openfasttrace.importer.lightweightmarkup.statemachine.*;
+import org.itsallcode.openfasttrace.importer.tag.common.CoverageTagParser;
+import org.itsallcode.openfasttrace.importer.tag.common.LineReader.LineConsumer;
 
 /**
  * Base class for importers of lightweight markup text.
@@ -20,13 +20,14 @@ public abstract class AbstractLightWeightMarkupImporter implements Importer, Lin
     protected final ImportEventListener listener;
     /** State machine for a line-by-line parser */
     protected final LineParserStateMachine stateMachine;
+    private final LineConsumer coverageTagParser;
     private String lastTitle;
     private boolean inSpecificationItem;
     private LineContext currentContext;
 
     /**
      * Create a new {@link AbstractLightWeightMarkupImporter}.
-     * 
+     *
      * @param file
      *            input file
      * @param listener
@@ -40,6 +41,7 @@ public abstract class AbstractLightWeightMarkupImporter implements Importer, Lin
         this.file = file;
         this.listener = listener;
         this.stateMachine = new LineParserStateMachine(configureTransitions());
+        this.coverageTagParser = CoverageTagParser.create(null, file, listener);
     }
 
     @Override
@@ -50,21 +52,37 @@ public abstract class AbstractLightWeightMarkupImporter implements Importer, Lin
 
     /**
      * Define the transitions of the parser statemachine.
-     * 
+     *
      * @return parser statemachine transitions
      */
     protected abstract Transition[] configureTransitions();
+
+    /**
+     * Tells whether a line is a native comment that can contain a coverage tag.
+     *
+     * @param context
+     *            current line and neighboring source lines
+     * @return {@code true} if the current line is a coverage-tag comment
+     *         candidate
+     */
+    protected abstract boolean isCoverageTagCommentCandidate(LineContext context);
 
     @Override
     public void nextLine(final LineContext context)
     {
         this.currentContext = context;
+        if (isCoverageTagCommentCandidate(context))
+        {
+            // [impl->dsn~markdown.comment-coverage-tags~1]
+            // [impl->dsn~rst.comment-coverage-tags~1]
+            this.coverageTagParser.readLine(context.lineNumber(), context.currentLine());
+        }
         this.stateMachine.step(this.currentContext.currentLine(), this.currentContext.nextLine());
     }
 
     /**
      * Define a transition in the parser statemachine.
-     * 
+     *
      * @param from
      *            state to be matched against the parsers current state
      * @param to
