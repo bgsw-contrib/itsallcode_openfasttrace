@@ -194,7 +194,7 @@ public class PlainTextReport implements Reportable
     private void renderDirectFailureIds(final PrintStream report)
     {
         this.trace.getDefectItems().stream() //
-                .filter(this::isDirectDefect) //
+                .filter(PlainTextReport::isDirectDefect) //
                 .map(LinkedSpecificationItem::getId) //
                 .sorted() //
                 .forEachOrdered(id -> {
@@ -214,7 +214,7 @@ public class PlainTextReport implements Reportable
     private void renderDirectFailureSummaries(final PrintStream report)
     {
         this.trace.getDefectItems().stream() //
-                .filter(this::isDirectDefect) //
+                .filter(PlainTextReport::isDirectDefect) //
                 .sorted(LINKED_ITEM_BY_ID) //
                 .forEachOrdered(item -> renderItemSummary(report, item));
     }
