@@ -163,6 +163,8 @@ A specification item is covered when for each of the required artifact types at 
 
 Deep coverage is a special form of coverage. Achieving deep coverage means that not only is a [specification item](#specification-item) covered by all required [artifact types](#specification-item-artifact-type), but also the covering items are all covered.
 
+If an item has shallow coverage but its covering items are not fully covered themselves, it has a [transitive defect](#transitive-defects).
+
 #### Terminating Specification Item
 
 A [specification item](#specification-item) terminates a chain of items if it does not require coverage in any [artifact type](#specification-item-artifact-type).
@@ -646,7 +648,7 @@ The verbosity of the tracing report.
 * `direct_failure_summaries` - list of summaries for specification items with non-transitive defects
 * `failure_details` - summaries and details for defect specification items
 * `direct_failure_details` - summaries and details for specification items with non-transitive defects
-* `all` -  summaries and details for all specification items
+* `all` - summaries and details for all specification items
 
 Defaults to `failure_details`.
 
@@ -927,6 +929,11 @@ If an artifact type provides coverage that is not requested, you find this indic
 
 > **not ok** &hellip; (impl, **+itest**, utest)
 
+<a name="transitive-defects"></a>
+If an item is covered correctly, but one of the items it covers has a defect itself, this is called a transitive defect. In this case, the item is marked as `not ok (transitive)`:
+
+> **not ok (transitive)** &hellip; (impl, utest)
+
 If there were any other specification objects defined with the same ID, you would see the following at the end of the summary line:
 
 > [has 3 duplicates]
@@ -948,6 +955,18 @@ The ID of the implementation comes from the Tag Importer and is for its most par
 In the square brackets you find the status of the link.
 
 Just in case you are wondering about the extra spaces in some places of the report, those exist as padding to align multiple similar items in lists. 
+
+### Report Summary
+
+At the end of the report, a summary is displayed that informs you about the overall state of the trace.
+
+> **ok** - 123 total
+
+If there are defects, the summary provides more details:
+
+> **not ok** - 123 total, 5 direct, 2 transitive defects
+
+Here, "direct" means that the item itself has a coverage defect, and "transitive" means that the item is correctly covered, but one of the items it covers (or its descendants) has a defect.
 
 ## XML Tracing Report
 
