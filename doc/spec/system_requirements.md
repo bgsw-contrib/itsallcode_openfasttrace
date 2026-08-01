@@ -551,6 +551,22 @@ Covers:
 
 Needs: dsn
 
+#### Transitive Defect
+`req~tracing.transitive-defect~1`
+
+OFT identifies a specification item as having a _transitive defect_ if it is a [defect item](#defect-items) but has no direct defects.
+
+An item has direct defects if:
+* It has duplicates.
+* It has bad links (any outgoing coverage link has a different status than "Covers").
+* It has uncovered artifact types (not all artifact types in its "Needs" section are covered by outgoing links).
+
+Covers:
+
+* [feat~requirement-tracing~1](#requirement-tracing)
+
+Needs: dsn
+
 #### Link Cycle
 `req~tracing.link-cycle~1`
 
@@ -623,7 +639,7 @@ Covers:
 Needs: dsn
 
 ### Reports
-Reports are the main way to find out if a projects requirements are covered properly.
+Reports are the main way to find out if a project's requirements are covered properly.
 
 #### Common Report Functions
 
@@ -650,16 +666,16 @@ Needs: dsn
 The plain text report is the most basic report variant. It serves two main purposes:
 
 1. Input in build chains
-2. Minimal requirement coverage view with the least dependencies. Any text terminal can display the plain text report.
+2. Minimal requirement coverage view with the least dependency. Any text terminal can display the plain text report.
 
 ##### Plain Text Report Summary
-`req~reporting.plain-text.summary~2`
+`req~reporting.plain-text.summary~3`
 
-The summary in the plain text report includes:
+The summary in the plain-text report includes:
 
 * Result status
 * Total number of specification items
-* Total number of defect specification items (if any)
+* Total number of direct and transitive defect specification items (if any)
 
 Covers:
 
@@ -670,7 +686,7 @@ Needs: dsn
 ##### Plain Text Report Specification Item Overview
 `req~reporting.plain-text.specification-item-overview~2`
 
-An item summary consist in the plain text report includes
+An item summary in the plain-text report includes
 
   1. Status
   2. Number of broken incoming links
@@ -733,6 +749,19 @@ Covers:
 
 Needs: dsn
 
+##### Plain Text Report Transitive Defect
+`req~reporting.plain-text.transitive-defect~1`
+
+The plain text report renders transitive defects less visually alarming than direct ones.
+Transitive defects are rendered with the suffix `(transitive)` and the status `not ok` is rendered in grey.
+
+Covers:
+
+* [feat~plain-text-report~1](#plain-text-report)
+
+Needs: dsn
+
+
 #### HTML Report
 
 ##### HTML Report is a Single File
@@ -773,6 +802,37 @@ OFT generates valid HTML format for the HTML report.
 Rationale:
 
 This ensures correct and consistent rendering of the HTML report.
+
+Covers:
+
+* [feat~html-report~1](#html-report)
+
+Needs: dsn
+
+##### HTML Report Transitive Defect Mark
+`req~reporting.html.transitive-defect-mark~1`
+
+The HTML report uses a special mark (❎) to indicate specification items with a [transitive defect](#transitive-defect).
+
+Covers:
+
+* [feat~html-report~1](#html-report)
+
+Needs: dsn
+
+##### HTML Report Summary
+`req~reporting.html.summary~2`
+
+The summary in the HTML report includes:
+
+* Result status
+* Total number of specification items
+* Completion status as a progress bar
+* Total number of direct and transitive defect specification items (if any)
+
+Rationale:
+
+This allows users to quickly identify if a failure is caused by the item itself or inherited from its dependencies.
 
 Covers:
 

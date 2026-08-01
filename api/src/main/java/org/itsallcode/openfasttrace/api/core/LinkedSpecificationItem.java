@@ -377,6 +377,21 @@ public class LinkedSpecificationItem
     }
 
     /**
+     * Check if the item has a transitive defect.
+     * <p>
+     * An item has a transitive defect if it is a defect but has no direct
+     * defects (duplicates, bad links, or direct uncovered needs).
+     * </p>
+     *
+     * @return {@code true} if the item has a transitive defect.
+     */
+    // [impl->dsn~tracing.transitive-defect~1]
+    public boolean isTransitiveDefect()
+    {
+        return isDefect() && !hasDuplicates() && !hasBadLinks() && areAllArtifactTypesCovered();
+    }
+
+    /**
      * Check if the item has one or more links.
      * 
      * @return {@code true} if the item has one or more links
@@ -398,7 +413,12 @@ public class LinkedSpecificationItem
         return false;
     }
 
-    private boolean areAllArtifactTypesCovered()
+    /**
+     * Check if all needed artifact types are covered.
+     *
+     * @return {@code true} if all needed artifact types are covered
+     */
+    public boolean areAllArtifactTypesCovered()
     {
         return this.getCoveredArtifactTypes().containsAll(this.getNeedsArtifactTypes());
     }

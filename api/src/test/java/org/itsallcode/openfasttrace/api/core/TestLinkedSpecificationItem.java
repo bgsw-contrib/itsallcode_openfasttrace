@@ -160,6 +160,25 @@ class TestLinkedSpecificationItem
     }
 
     @Test
+    // [utest->dsn~tracing.transitive-defect~1]
+    void testIsTransitiveDefect_True()
+    {
+        when(this.itemMock.getNeedsArtifactTypes()).thenReturn(List.of(IMPL));
+        when(this.coveredItemMock.getArtifactType()).thenReturn(IMPL);
+        this.linkedItem.addLinkToItemWithStatus(this.coveredLinkedItem, LinkStatus.COVERED_SHALLOW);
+        when(this.coveredItemMock.getNeedsArtifactTypes()).thenReturn(List.of(DSN));
+        assertThat(this.linkedItem.isTransitiveDefect(), equalTo(true));
+    }
+
+    @Test
+    // [utest->dsn~tracing.transitive-defect~1]
+    void testIsTransitiveDefect_FalseBecauseDirectDefect()
+    {
+        when(this.itemMock.getNeedsArtifactTypes()).thenReturn(List.of(IMPL));
+        assertThat(this.linkedItem.isTransitiveDefect(), equalTo(false));
+    }
+
+    @Test
     void testCountOutgoingLinks()
     {
         linkToNewItemsWithStatus(LinkStatus.COVERS, LinkStatus.PREDATED, LinkStatus.OUTDATED,
