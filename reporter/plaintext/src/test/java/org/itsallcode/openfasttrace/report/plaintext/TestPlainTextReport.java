@@ -146,6 +146,24 @@ class TestPlainTextReport
     }
 
     @Test
+    // [utest->dsn~reporting.verbosity.direct-failures~1]
+    void testReport_LevelDirectFailures_NotOK()
+    {
+        final LinkedSpecificationItem directDefect = mock(LinkedSpecificationItem.class);
+        when(directDefect.isDefect()).thenReturn(true);
+        when(directDefect.isTransitiveDefect()).thenReturn(false);
+        when(directDefect.getId()).thenReturn(SpecificationItemId.parseId("req~direct~1"));
+
+        final LinkedSpecificationItem transitiveDefect = mock(LinkedSpecificationItem.class);
+        when(transitiveDefect.isDefect()).thenReturn(true);
+        when(transitiveDefect.isTransitiveDefect()).thenReturn(true);
+        lenient().when(transitiveDefect.getId()).thenReturn(SpecificationItemId.parseId("req~transitive~1"));
+
+        when(this.traceMock.getDefectItems()).thenReturn(asList(directDefect, transitiveDefect));
+        assertReportOutput(ReportVerbosity.DIRECT_FAILURES, "req~direct~1");
+    }
+
+    @Test
     // [utest->dsn~reporting.plain-text.specification-item-overview~2]
     void testReport_LevelFailureSummaries_NotOK()
     {
@@ -160,6 +178,39 @@ class TestPlainTextReport
                 "not ok [ in:  5 /  6 ✘ | out:  0 /  0   ] req~zoo~2 [draft] (dsn, +utest)", //
                 "", //
                 "not ok - 6 total, 4 direct, 0 transitive defects");
+    }
+
+    @Test
+    // [utest->dsn~reporting.verbosity.direct-failure-summaries~1]
+    void testReport_LevelDirectFailureSummaries_NotOK()
+    {
+        when(this.traceMock.count()).thenReturn(7);
+        when(this.traceMock.countDefects()).thenReturn(5);
+        prepareFailedItemDetailsWithTransitive();
+
+        assertReportOutput(ReportVerbosity.DIRECT_FAILURE_SUMMARIES, //
+                "not ok [ in:  0 /  0   | out:  2 /  4 ✘ ] dsn~bar~1 [proposed] (impl, -uman, utest)", //
+                "not ok [ in:  3 /  3 ✔ | out:  2 /  2 ✔ ] req~foo~1 (dsn) [has 1 duplicate]", //
+                "not ok [ in:  4 /  7 ✘ | out:  1 /  3 ✘ ] req~zoo~1 [rejected] (-impl, -utest) [has 1 duplicate]", //
+                "not ok [ in:  5 /  6 ✘ | out:  0 /  0   ] req~zoo~2 [draft] (dsn, +utest)", //
+                "", //
+                "not ok - 7 total, 4 direct, 1 transitive defects");
+    }
+
+    private void prepareFailedItemDetailsWithTransitive()
+    {
+        prepareFailedItemDetails();
+        final LinkedSpecificationItem transitiveDefectMock = mock(LinkedSpecificationItem.class);
+        when(transitiveDefectMock.isDefect()).thenReturn(true);
+        when(transitiveDefectMock.isTransitiveDefect()).thenReturn(true);
+        lenient().when(transitiveDefectMock.getId()).thenReturn(SpecificationItemId.parseId("req~transitive~1"));
+        lenient().when(transitiveDefectMock.getCoveredArtifactTypes()).thenReturn(new HashSet<>(List.of(IMPL)));
+        lenient().when(transitiveDefectMock.getUncoveredArtifactTypes()).thenReturn(Collections.emptyList());
+        lenient().when(transitiveDefectMock.getOverCoveredArtifactTypes()).thenReturn(Collections.emptySet());
+
+        final List<LinkedSpecificationItem> defects = new ArrayList<>(this.traceMock.getDefectItems());
+        defects.add(transitiveDefectMock);
+        when(this.traceMock.getDefectItems()).thenReturn(defects);
     }
 
     @Test
@@ -238,6 +289,46 @@ class TestPlainTextReport
                 "", //
                 "", //
                 "not ok - 2 total, 1 direct, 0 transitive defects");
+    }
+
+    @Test
+    // [utest->dsn~reporting.verbosity.direct-failure-details~1]
+    void testReport_LevelDirectFailureDetails()
+    {
+        when(this.traceMock.count()).thenReturn(3);
+        when(this.traceMock.countDefects()).thenReturn(2);
+        prepareMixedItemDetailsWithTransitive();
+
+        assertReportOutput(ReportVerbosity.DIRECT_FAILURE_DETAILS, //
+                "not ok [ in:  1 /  1 ✔ | out:  2 /  4 ✘ ] dsn~failure~0 (impl, uman, -utest) [has 3 duplicates]", //
+                "", //
+                "  This is a failure.", //
+                "", //
+                "  [covered shallow  ] ← imp~failure~0", //
+                "  [covers           ] → req~bar~1", //
+                "  [unwanted         ] → req~baz~1", //
+                "  [covers           ] → req~foo~1", //
+                "  [outdated         ] → req~zoo~1", //
+                "  [orphaned         ] → req~zoo~2", //
+                "", //
+                "", //
+                "not ok - 3 total, 1 direct, 1 transitive defects");
+    }
+
+    private void prepareMixedItemDetailsWithTransitive()
+    {
+        prepareMixedItemDetails();
+        final LinkedSpecificationItem transitiveDefectMock = mock(LinkedSpecificationItem.class);
+        when(transitiveDefectMock.isDefect()).thenReturn(true);
+        when(transitiveDefectMock.isTransitiveDefect()).thenReturn(true);
+        lenient().when(transitiveDefectMock.getId()).thenReturn(SpecificationItemId.parseId("req~transitive~1"));
+        lenient().when(transitiveDefectMock.getCoveredArtifactTypes()).thenReturn(new HashSet<>(List.of(IMPL)));
+        lenient().when(transitiveDefectMock.getUncoveredArtifactTypes()).thenReturn(Collections.emptyList());
+        lenient().when(transitiveDefectMock.getOverCoveredArtifactTypes()).thenReturn(Collections.emptySet());
+
+        final List<LinkedSpecificationItem> defects = new ArrayList<>(this.traceMock.getDefectItems());
+        defects.add(transitiveDefectMock);
+        when(this.traceMock.getDefectItems()).thenReturn(defects);
     }
 
     // [utest->dsn~reporting.plain-text.link-details~1]

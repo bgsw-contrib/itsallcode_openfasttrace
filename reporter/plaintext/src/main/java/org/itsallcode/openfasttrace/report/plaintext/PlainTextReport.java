@@ -60,6 +60,7 @@ public class PlainTextReport implements Reportable
         }
     }
 
+    @SuppressWarnings("java:S1541") // Trivial logic. Cyclomatic complexity is not a problem.
     private void renderToPrintStream(final PrintStream report)
     {
         switch (this.settings.getReportVerbosity())
@@ -75,13 +76,26 @@ public class PlainTextReport implements Reportable
         case FAILURES:
             renderFailureIds(report);
             break;
+        case DIRECT_FAILURES:
+            renderDirectFailureIds(report);
+            break;
         case FAILURE_SUMMARIES:
             renderFailureSummaries(report);
             separateItemsFromSummary(report);
             renderSummary(report);
             break;
+        case DIRECT_FAILURE_SUMMARIES:
+            renderDirectFailureSummaries(report);
+            separateItemsFromSummary(report);
+            renderSummary(report);
+            break;
         case FAILURE_DETAILS:
             renderFailureDetails(report, this.settings.showOrigin());
+            separateItemsFromSummary(report);
+            renderSummary(report);
+            break;
+        case DIRECT_FAILURE_DETAILS:
+            renderDirectFailureDetails(report, this.settings.showOrigin());
             separateItemsFromSummary(report);
             renderSummary(report);
             break;
@@ -102,6 +116,11 @@ public class PlainTextReport implements Reportable
         {
             report.print(this.settings.getNewline());
         }
+    }
+
+    private static boolean isDirectDefect(final LinkedSpecificationItem item)
+    {
+        return item.isDefect() && !item.isTransitiveDefect();
     }
 
     private void renderResultStatus(final PrintStream report)
@@ -171,9 +190,31 @@ public class PlainTextReport implements Reportable
                 });
     }
 
+    // [impl->dsn~reporting.verbosity.direct-failures~1]
+    private void renderDirectFailureIds(final PrintStream report)
+    {
+        this.trace.getDefectItems().stream() //
+                .filter(this::isDirectDefect) //
+                .map(LinkedSpecificationItem::getId) //
+                .sorted() //
+                .forEachOrdered(id -> {
+                    report.print(id);
+                    report.print(this.settings.getNewline().toString());
+                });
+    }
+
     private void renderFailureSummaries(final PrintStream report)
     {
         this.trace.getDefectItems().stream() //
+                .sorted(LINKED_ITEM_BY_ID) //
+                .forEachOrdered(item -> renderItemSummary(report, item));
+    }
+
+    // [impl->dsn~reporting.verbosity.direct-failure-summaries~1]
+    private void renderDirectFailureSummaries(final PrintStream report)
+    {
+        this.trace.getDefectItems().stream() //
+                .filter(this::isDirectDefect) //
                 .sorted(LINKED_ITEM_BY_ID) //
                 .forEachOrdered(item -> renderItemSummary(report, item));
     }
@@ -256,6 +297,15 @@ public class PlainTextReport implements Reportable
     private void renderFailureDetails(final PrintStream report, final boolean showOrigin)
     {
         this.trace.getDefectItems().stream() //
+                .sorted(LINKED_ITEM_BY_ID) //
+                .forEachOrdered(item -> renderItemDetails(report, item, showOrigin));
+    }
+
+    // [impl->dsn~reporting.verbosity.direct-failure-details~1]
+    private void renderDirectFailureDetails(final PrintStream report, final boolean showOrigin)
+    {
+        this.trace.getDefectItems().stream() //
+                .filter(PlainTextReport::isDirectDefect) //
                 .sorted(LINKED_ITEM_BY_ID) //
                 .forEachOrdered(item -> renderItemDetails(report, item, showOrigin));
     }

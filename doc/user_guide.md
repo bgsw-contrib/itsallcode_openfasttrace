@@ -641,8 +641,11 @@ The verbosity of the tracing report.
 * `minimal` - display `ok` or `not ok`
 * `summary` - display only the summary, not individual specification items
 * `failures` - list of defect specification items
+* `direct_failures` - list of specification items with non-transitive defects
 * `failure_summaries` - list of summaries for defect specification items
+* `direct_failure_summaries` - list of summaries for specification items with non-transitive defects
 * `failure_details` - summaries and details for defect specification items
+* `direct_failure_details` - summaries and details for specification items with non-transitive defects
 * `all` -  summaries and details for all specification items
 
 Defaults to `failure_details`.

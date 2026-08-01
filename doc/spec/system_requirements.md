@@ -662,6 +662,43 @@ Covers:
 
 Needs: dsn
 
+#### Report Verbosity
+
+OFT allows users to control the verbosity of the tracing report.
+
+##### Report Verbosity Direct Failures
+`req~reporting.verbosity.direct-failures~1`
+
+The verbosity level `direct_failures` lists only the IDs of specification items with direct defects.
+
+Covers:
+
+* [feat~plain-text-report~1](#plain-text-report)
+
+Needs: dsn
+
+##### Report Verbosity Direct Failure Summaries
+`req~reporting.verbosity.direct-failure-summaries~1`
+
+The verbosity level `direct_failure_summaries` lists only the summaries of specification items with direct defects.
+
+Covers:
+
+* [feat~plain-text-report~1](#plain-text-report)
+
+Needs: dsn
+
+##### Report Verbosity Direct Failure Details
+`req~reporting.verbosity.direct-failure-details~1`
+
+The verbosity level `direct_failure_details` lists only the summaries and details of specification items with direct defects.
+
+Covers:
+
+* [feat~plain-text-report~1](#plain-text-report)
+
+Needs: dsn
+
 #### Plain Text Report
 The plain text report is the most basic report variant. It serves two main purposes:
 

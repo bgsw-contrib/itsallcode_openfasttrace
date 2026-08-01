@@ -536,6 +536,41 @@ Covers:
 
 Needs: impl, utest
 
+## Report Verbosity
+
+### Verbosity Level Direct Failures
+`dsn~reporting.verbosity.direct-failures~1`
+
+The verbosity level `direct_failures` renders only IDs of items that are not ok and do not have a transitive defect.
+
+Covers:
+
+* `req~reporting.verbosity.direct-failures~1`
+
+Needs: impl, utest
+
+### Verbosity Level Direct Failure Summaries
+`dsn~reporting.verbosity.direct-failure-summaries~1`
+
+The verbosity level `direct_failure_summaries` renders only summaries of items that are not ok and do not have a transitive defect.
+
+Covers:
+
+* `req~reporting.verbosity.direct-failure-summaries~1`
+
+Needs: impl, utest
+
+### Verbosity Level Direct Failure Details
+`dsn~reporting.verbosity.direct-failure-details~1`
+
+The verbosity level `direct_failure_details` renders only summaries and details of items that are not ok and do not have a transitive defect.
+
+Covers:
+
+* `req~reporting.verbosity.direct-failure-details~1`
+
+Needs: impl, utest
+
 ## Tracing Reports
 
 ### Plain Text Report

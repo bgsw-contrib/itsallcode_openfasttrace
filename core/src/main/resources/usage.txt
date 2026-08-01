@@ -10,8 +10,12 @@ Commands:
 Tracing options:
   -o, --output-format          Report format, one of "plain", "html", "aspec"
                                Defaults to "plain"
-  -v, --report-verbosity       Set how verbose the output is. Ranges from
-                               "quiet" to "all".
+  -v, --report-verbosity       Set how verbose the output is. One of "quiet",
+                               "minimal", "summary", "failures",
+                               "direct_failures", "failure_summaries",
+                               "direct_failure_summaries", "failure_details",
+                               "direct_failure_details", "all".
+                               Defaults to "failure_details"
   --details-section-display status
                                Initial display status of the details section
                                in the HTML report. One of "collapse" or "expand".
