@@ -26,6 +26,17 @@ public interface ImportEventListener
     void setId(final SpecificationItemId id);
 
     /**
+     * The importer found the declared ID together with its source occurrence.
+     *
+     * @param id
+     *            located ID occurrence
+     */
+    default void setId(final LocatedSpecificationItemId id)
+    {
+        setId(id.getId());
+    }
+
+    /**
      * The importer found the title of a specification item
      *
      * @param title
@@ -75,12 +86,34 @@ public interface ImportEventListener
     void addCoveredId(final SpecificationItemId id);
 
     /**
+     * Add a covered ID together with its source occurrence.
+     *
+     * @param id
+     *            located covered ID occurrence
+     */
+    default void addCoveredId(final LocatedSpecificationItemId id)
+    {
+        addCoveredId(id.getId());
+    }
+
+    /**
      * Add the ID of a specification item that this item depends on
      *
      * @param id
      *            the ID of the item depends on
      */
     void addDependsOnId(final SpecificationItemId id);
+
+    /**
+     * Add a dependency ID together with its source occurrence.
+     *
+     * @param id
+     *            located dependency ID occurrence
+     */
+    default void addDependsOnId(final LocatedSpecificationItemId id)
+    {
+        addDependsOnId(id.getId());
+    }
 
     /**
      * The importer detected that the current specification object needs to be

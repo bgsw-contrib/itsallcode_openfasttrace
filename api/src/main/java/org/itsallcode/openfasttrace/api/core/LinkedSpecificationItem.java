@@ -12,8 +12,7 @@ import java.util.function.Predicate;
 public class LinkedSpecificationItem
 {
     private final SpecificationItem item;
-    private final Map<LinkStatus, List<LinkedSpecificationItem>> links = new EnumMap<>(
-            LinkStatus.class);
+    private final Map<LinkStatus, List<LinkedSpecificationItem>> links = new EnumMap<>(LinkStatus.class);
     private final Set<String> coveredArtifactTypes = new HashSet<>();
     private final Set<String> coveredArtifactTypesFromApprovedItems = new HashSet<>();
     private final Set<String> overCoveredArtifactTypes = new HashSet<>();
@@ -161,7 +160,7 @@ public class LinkedSpecificationItem
         if (coveringItem.getItem().getCoveredIds() != null
                 && !coveringItem.getItem().getCoveredIds().contains(getId()))
         {
-            coveringItem.getItem().getCoveredIds().add(getId());
+            coveringItem.getItem().addCoveredId(getId());
         }
     }
 
@@ -312,7 +311,7 @@ public class LinkedSpecificationItem
 
     /**
      * Check if all needed attribute types are covered by approved items.
-     * 
+     *
      * @return {@code true} if all needed attribute types are covered by
      *         approved items
      */
@@ -356,6 +355,7 @@ public class LinkedSpecificationItem
      * <p>
      * An item counts as a defect if the following applies:
      * </p>
+     *
      * <pre>
      * has duplicates
      * or (not rejected
@@ -393,7 +393,7 @@ public class LinkedSpecificationItem
 
     /**
      * Check if the item has one or more links.
-     * 
+     *
      * @return {@code true} if the item has one or more links
      */
     public boolean hasLinks()
@@ -492,7 +492,7 @@ public class LinkedSpecificationItem
 
     /**
      * Check if this item has one ore more duplicates.
-     * 
+     *
      * @return {@code true} if this item has one ore more duplicates.
      */
     public boolean hasDuplicates()
