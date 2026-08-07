@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import org.hamcrest.Matcher;
 import org.itsallcode.openfasttrace.api.core.*;
 import org.itsallcode.openfasttrace.api.importer.ImporterFactory;
+import org.itsallcode.openfasttrace.testutil.core.ItemBuilderFactory;
 import org.itsallcode.openfasttrace.testutil.importer.ImportAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -98,7 +99,10 @@ public abstract class AbstractLightWeightMarkupImporterTest
     protected void assertImport(final Path path, final String input,
             final Matcher<Iterable<? extends SpecificationItem>> matcher)
     {
-        ImportAssertions.assertImportWithFactory(path, processTextInput(input), matcher, getImporterFactory());
+        final List<SpecificationItem> importedItems = ImportAssertions.runImporterOnText(path,
+                processTextInput(input), getImporterFactory());
+        assertThat(importedItems.stream().map(ItemBuilderFactory::withoutIdLocations)
+                .toList(), matcher);
     }
 
     private String processTextInput(final String input)

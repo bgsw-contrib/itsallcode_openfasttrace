@@ -20,10 +20,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 // [utest->dsn~import.short-coverage-tag~1]
-class TestShortTagImportingLineConsumer {
+class TestShortTagImportingLineConsumer
+{
     private static final String FILE = "source.file";
 
-    static Stream<Arguments> shortTagImportingTests() {
+    static Stream<Arguments> shortTagImportingTests()
+    {
         return Stream.of(
                 testCase(3, "[[covered:2" + "]]", null,
                         item("covered-3798966306", 3, "req~covered~2")),
@@ -35,14 +37,16 @@ class TestShortTagImportingLineConsumer {
     }
 
     private static Arguments testCase(final int lineNumber, final String tag, final String coveredItemNamePrefix,
-            final SpecificationItem... expectedItems) {
+            final SpecificationItem... expectedItems)
+    {
         return Arguments.of(lineNumber, tag, coveredItemNamePrefix, List.of(expectedItems));
     }
 
     @ParameterizedTest
     @MethodSource("shortTagImportingTests")
     void importsShortTag(final int lineNumber, final String tag, final String coveredItemNamePrefix,
-            final List<SpecificationItem> expectedItems) {
+            final List<SpecificationItem> expectedItems)
+    {
         final SpecificationListBuilder listener = SpecificationListBuilder.create();
         final ShortTagImportingLineConsumer consumer = new ShortTagImportingLineConsumer(
                 pathConfig(coveredItemNamePrefix), inputFile(), listener);
@@ -52,7 +56,8 @@ class TestShortTagImportingLineConsumer {
         assertThat(listener.build(), equalTo(expectedItems));
     }
 
-    private static PathConfig pathConfig(final String coveredItemNamePrefix) {
+    private static PathConfig pathConfig(final String coveredItemNamePrefix)
+    {
         return PathConfig.builder()
                 .patternPathMatcher("glob:**")
                 .coveredItemArtifactType("req")
@@ -61,7 +66,8 @@ class TestShortTagImportingLineConsumer {
                 .build();
     }
 
-    private static SpecificationItem item(final String tagItemName, final int lineNumber, final String coveredId) {
+    private static SpecificationItem item(final String tagItemName, final int lineNumber, final String coveredId)
+    {
         return SpecificationItem.builder()
                 .id(SpecificationItemId.createId("utest", tagItemName))
                 .location(FILE, lineNumber)
@@ -69,7 +75,8 @@ class TestShortTagImportingLineConsumer {
                 .build();
     }
 
-    private static InputFile inputFile() {
+    private static InputFile inputFile()
+    {
         return StreamInput.forReader(Paths.get(FILE), new BufferedReader(new StringReader("")));
     }
 }

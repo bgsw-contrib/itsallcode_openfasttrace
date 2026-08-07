@@ -11,7 +11,8 @@ import org.itsallcode.openfasttrace.api.importer.input.InputFile;
 import org.itsallcode.openfasttrace.api.importer.tag.config.PathConfig;
 
 // [impl->dsn~import.short-coverage-tag~1]
-class ShortTagImportingLineConsumer extends AbstractRegexLineConsumer {
+class ShortTagImportingLineConsumer extends AbstractRegexLineConsumer
+{
     private static final Logger LOG = Logger.getLogger(ShortTagImportingLineConsumer.class.getName());
 
     private static final String TAG_PREFIX = "\\[\\[";
@@ -27,7 +28,8 @@ class ShortTagImportingLineConsumer extends AbstractRegexLineConsumer {
     private final InputFile file;
 
     ShortTagImportingLineConsumer(final PathConfig pathConfig, final InputFile file,
-            final ImportEventListener listener) {
+            final ImportEventListener listener)
+    {
         super(TAG_REGEX);
         this.pathConfig = pathConfig;
         this.file = file;
@@ -35,7 +37,8 @@ class ShortTagImportingLineConsumer extends AbstractRegexLineConsumer {
     }
 
     @Override
-    void processMatch(final Matcher matcher, final int lineNumber, final int lineMatchCount) {
+    void processMatch(final Matcher matcher, final int lineNumber, final int lineMatchCount)
+    {
         final String coveredItemName = matcher.group(1);
         final String coveredItemRevision = matcher.group(2);
         final SpecificationItemId coveredId = createCoveredItem(coveredItemName, coveredItemRevision);
@@ -52,27 +55,34 @@ class ShortTagImportingLineConsumer extends AbstractRegexLineConsumer {
                 .build());
     }
 
-    private SpecificationItemId createCoveredItem(final String name, final String revision) {
+    private SpecificationItemId createCoveredItem(final String name, final String revision)
+    {
         final int parsedRevision = parseRevision(name, revision);
         final String nameWithPrefix = getCoveredItemNamePrefix() + name;
         return SpecificationItemId.createId(this.pathConfig.getCoveredItemArtifactType(), nameWithPrefix,
                 parsedRevision);
     }
 
-    private static int parseRevision(final String name, final String revision) {
-        try {
+    private static int parseRevision(final String name, final String revision)
+    {
+        try
+        {
             return Integer.parseInt(revision);
-        } catch (final NumberFormatException exception) {
+        }
+        catch (final NumberFormatException exception)
+        {
             throw new ImporterException("Error parsing revision '" + revision + "' for item '" + name + "'.",
                     exception);
         }
     }
 
-    private String getCoveredItemNamePrefix() {
+    private String getCoveredItemNamePrefix()
+    {
         return this.pathConfig.getCoveredItemNamePrefix() != null ? this.pathConfig.getCoveredItemNamePrefix() : "";
     }
 
-    private String generateName(final SpecificationItemId coveredId, final int lineNumber, final int counter) {
+    private String generateName(final SpecificationItemId coveredId, final int lineNumber, final int counter)
+    {
         final String uniqueName = this.file.toString() + lineNumber + counter + coveredId;
         final String checksum = Long.toString(ChecksumCalculator.calculateCrc32(uniqueName));
         return coveredId.getName() + "-" + checksum;

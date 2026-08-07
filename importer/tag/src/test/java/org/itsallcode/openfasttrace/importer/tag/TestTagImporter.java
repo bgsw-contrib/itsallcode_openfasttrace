@@ -18,6 +18,7 @@ import org.itsallcode.openfasttrace.api.core.SpecificationItemId;
 import org.itsallcode.openfasttrace.api.importer.ImporterContext;
 import org.itsallcode.openfasttrace.api.importer.SpecificationListBuilder;
 import org.itsallcode.openfasttrace.api.importer.input.InputFile;
+import org.itsallcode.openfasttrace.testutil.core.ItemBuilderFactory;
 import org.itsallcode.openfasttrace.testutil.importer.input.StreamInput;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -249,7 +250,8 @@ class TestTagImporter
         assertThat(result, hasSize(expectedItems.size()));
         if (!expectedItems.isEmpty())
         {
-            assertThat(result, AutoMatcher.contains(expectedItems.toArray(new SpecificationItem[0])));
+            assertThat(result.stream().map(ItemBuilderFactory::withoutIdLocations).toList(),
+                    AutoMatcher.contains(expectedItems.toArray(new SpecificationItem[0])));
         }
     }
 

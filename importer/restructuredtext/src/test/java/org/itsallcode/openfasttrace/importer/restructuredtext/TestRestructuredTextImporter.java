@@ -1,12 +1,20 @@
 package org.itsallcode.openfasttrace.importer.restructuredtext;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.is;
 import static org.itsallcode.matcher.auto.AutoMatcher.contains;
 import static org.itsallcode.openfasttrace.api.core.SpecificationItemId.createId;
 import static org.itsallcode.openfasttrace.testutil.core.ItemBuilderFactory.item;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.nio.file.Path;
+import java.util.List;
+
+import org.itsallcode.openfasttrace.api.core.SpecificationItem;
 import org.itsallcode.openfasttrace.api.core.SpecificationItemId;
 import org.itsallcode.openfasttrace.api.importer.*;
+import org.itsallcode.openfasttrace.testutil.importer.ImportAssertions;
 import org.itsallcode.openfasttrace.testutil.importer.lightweightmarkup.AbstractLightWeightMarkupImporterTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -72,6 +80,29 @@ class TestRestructuredTextImporter extends AbstractLightWeightMarkupImporterTest
                 .. %s
                    continuation
                 """.formatted(FULL_COVERAGE_TAG), emptyIterable());
+    }
+
+    // [utest->dsn~located-specification-item-id-text-ranges~1]
+    @Test
+    void testImportsLocatedDeclarationCoverageAndDependencyIds()
+    {
+        final SpecificationItem item = importText("""
+                req~subject~1
+                Covers:
+                * req~covered~2
+                Depends:
+                * req~dependency~3
+                """).get(0);
+
+        assertAll(
+                () -> assertThat(item.getId(), is(createId("req", "subject", 1))),
+                () -> assertThat(item.getCoveredIds(), contains(createId("req", "covered", 2))),
+                () -> assertThat(item.getDependOnIds(), contains(createId("req", "dependency", 3))));
+    }
+
+    private static List<SpecificationItem> importText(final String source)
+    {
+        return ImportAssertions.runImporterOnText(Path.of("located.rst"), source, importerFactory);
     }
 
     protected String formatTitle(final String title, final int level)
