@@ -237,6 +237,21 @@ This project is configured to produce exactly the same artifacts each time when 
 
 The build will use the last Git commit timestamp as timestamp for files in `.jar` archives.
 
+## SBOM
+
+The project generates an [SPDX](https://spdx.dev/) SBOM using the [SPDX Maven Plugin](https://github.com/spdx/spdx-maven-plugin).
+
+The SPDX plugin runs during Maven's `package` phase and creates an SBOM for each Maven module. The product SBOM describes the product and its production dependencies.
+
+Build OFT and create the SBOMs with a single command:
+
+```shell
+mvn package
+```
+
+> [!IMPORTANT]
+> OFT does not include third-party packages in the production JAR. The JRE is provided by the machine on which OFT runs. Therefore, the product SBOM contains only OFT modules. Test dependencies are excluded because they are not relevant to OFT users.
+
 ## Creating a Release
 
 **NOTE**: This currently only works for release version numbers, not SNAPSHOT versions.

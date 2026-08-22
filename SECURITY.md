@@ -15,3 +15,7 @@ If you discover a potential security issue, please report it privately via [GitH
 - **Disclose** the details publicly once a fix is available and users have had time to update.
 
 While we don't offer bug bounties, we'd be happy to publicly acknowledge your contribution in the advisory.
+
+## Software Bill of Materials (SBOM)
+
+Starting with version 4.10.0, each GitHub release includes an SPDX Software Bill of Materials (SBOM) for the OpenFastTrace product JAR and a SHA-256 checksum for the SBOM.
